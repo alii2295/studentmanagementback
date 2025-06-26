@@ -2,6 +2,7 @@ package com.example.studentmanagement.controllers;
 
 import com.example.studentmanagement.models.Student;
 import com.example.studentmanagement.services.StudentService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,4 +42,18 @@ public class StudentController {
     public void delete(@PathVariable Long id) {
         service.deleteStudent(id);
     }
+    @GetMapping("/search")
+    public List<Student> search(@RequestParam String keyword) {
+        return service.search(keyword);
+    }
+    @GetMapping("/sorted")
+    public List<Student> getSortedStudents(@RequestParam(defaultValue = "firstName") String sortBy) {
+        return service.getSortedStudents(sortBy);
+    }
+    @GetMapping("/paginated")
+    public Page<Student> getStudentsPaginated(@RequestParam int page, @RequestParam int size) {
+        return service.getPaginatedStudents(page, size);
+    }
+
+
 }
