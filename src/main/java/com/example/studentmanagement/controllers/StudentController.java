@@ -6,6 +6,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -55,5 +68,31 @@ public class StudentController {
         return service.getPaginatedStudents(page, size);
     }
 
+    // ✅ Upload photo
+    @PostMapping("/upload-photo/{id}")
+    public ResponseEntity<String> uploadPhoto(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            String filename = service.uploadPhoto(id, file);
+            return ResponseEntity.ok("Photo uploaded: " + filename);
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body("Upload failed");
+        }
+    }
 
+    // ✅ Télécharger photo
+    @GetMapping("/photo/{filename:.+}")
+    public ResponseEntity<Resource> getPhoto(@PathVariable String filename) {
+        try {
+            Resource file = service.loadPhoto(filename);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                    .body(file);
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
+
+
+
+

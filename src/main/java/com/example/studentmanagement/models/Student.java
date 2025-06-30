@@ -21,6 +21,9 @@ public class Student {
     private String lastName;
     private String email;
     private String department;
+    @Lob
+    private String photoUrl; // chemin de l'image stockée sur le serveur
+
 
     // Getters & Setters
 }
